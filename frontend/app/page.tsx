@@ -4,16 +4,11 @@ import { useEffect } from "react";
 
 export default function Home() {
   useEffect(() => {
-    const header = document.querySelector<HTMLElement>("[data-header]");
-    const nav = document.querySelector<HTMLElement>("[data-nav]");
-    const navToggle = document.querySelector<HTMLButtonElement>("[data-nav-toggle]");
     const parallaxVideo = document.querySelector<HTMLVideoElement>("[data-parallax-video]");
     const revealItems = document.querySelectorAll<HTMLElement>(".reveal");
     const filterButtons = document.querySelectorAll<HTMLButtonElement>("[data-filter]");
     const searchInput = document.querySelector<HTMLInputElement>("[data-search]");
     const loadMore = document.querySelector<HTMLButtonElement>("[data-load-more]");
-
-    if (!header || !nav || !navToggle) return;
 
     const activateHeroVideo = () => {
       if (!parallaxVideo) return;
@@ -32,31 +27,6 @@ export default function Home() {
         parallaxVideo.classList.remove("is-ready");
       });
     }
-
-    const setHeaderState = () => {
-      header.classList.toggle("is-scrolled", window.scrollY > 24);
-
-      if (parallaxVideo) {
-        const offset = Math.min(window.scrollY * 0.12, 80);
-        parallaxVideo.style.transform = `translateY(${offset}px) scale(1.05)`;
-      }
-    };
-
-    const closeNav = () => {
-      document.body.classList.remove("nav-open");
-      nav.classList.remove("is-open");
-      navToggle.setAttribute("aria-expanded", "false");
-    };
-
-    navToggle.addEventListener("click", () => {
-      const isOpen = nav.classList.toggle("is-open");
-      document.body.classList.toggle("nav-open", isOpen);
-      navToggle.setAttribute("aria-expanded", String(isOpen));
-    });
-
-    nav.querySelectorAll("a").forEach((link) => {
-      link.addEventListener("click", closeNav);
-    });
 
     const revealObserver = new IntersectionObserver(
         (entries) => {
@@ -157,44 +127,11 @@ export default function Home() {
         applyProjectFilters();
       });
     }
-
-    window.addEventListener("scroll", setHeaderState, { passive: true });
-    setHeaderState();
-
-    return () => {
-      window.removeEventListener("scroll", setHeaderState);
-      revealObserver.disconnect();
-    };
   }, []);
 
   return (
       <>
-        <header className="site-header" data-header>
-          <a className="brand-mark" href="/" aria-label="Production Stojkovski home">
-            <span className="brand-symbol">PS</span>
-            <span>Produkcija Stojkovski</span>
-          </a>
-          <button
-              className="nav-toggle"
-              type="button"
-              aria-label="Open navigation"
-              aria-expanded="false"
-              data-nav-toggle
-          >
-            <span></span>
-            <span></span>
-          </button>
-          <nav className="site-nav" data-nav>
-            <a href="/">Home</a>
-            <a href="/portfolio">Portfolio</a>
-            <a href="/services">Services</a>
-            <a href="/about">About</a>
-            <a href="/contact">Contact</a>
-            <a className="nav-cta" href="/bookAProject">
-              Book a Project
-            </a>
-          </nav>
-        </header>
+
 
         <main>
           <section className="hero" id="home" aria-label="Cinematic hero">

@@ -61,22 +61,6 @@ export default function ServicesPage() {
 
     return (
         <>
-            <header className="site-header">
-                <a className="brand-mark" href="/" aria-label="Production Stojkovski home">
-                    <span className="brand-symbol">PS</span>
-                    <span>Produkcija Stojkovski</span>
-                </a>
-                <nav className="site-nav">
-                    <a href="/">Home</a>
-                    <a href="/portfolio">Portfolio</a>
-                    <a href="/services">Services</a>
-                    <a href="/about">About</a>
-                    <a href="/contact">Contact</a>
-                    <a className="nav-cta" href="/bookAProject">
-                        Book a Project
-                    </a>
-                </nav>
-            </header>
 
             <section className="services section-shell" id="services" aria-labelledby="services-title">
                 <p className="section-kicker reveal">Services</p>

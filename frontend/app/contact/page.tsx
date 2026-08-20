@@ -3,23 +3,6 @@ import "../css/contact.css";
 export default function Contact() {
     return (
         <>
-            <header className="site-header">
-                <a className="brand-mark" href="/" aria-label="Produkcija Stojkovski home">
-                    <span className="brand-symbol">PS</span>
-                    <span>Produkcija Stojkovski</span>
-                </a>
-
-                <nav className="site-nav">
-                    <a href="/">Home</a>
-                    <a href="/portfolio">Portfolio</a>
-                    <a href="/services">Services</a>
-                    <a href="/about">About</a>
-                    <a href="/contact">Contact</a>
-                    <a className="nav-cta" href="/bookAProject">
-                        Book a Project
-                    </a>
-                </nav>
-            </header>
 
             <main className="contact-page">
                 <section className="contact-hero">

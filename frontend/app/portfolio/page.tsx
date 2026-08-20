@@ -308,27 +308,7 @@ export default function Page() {
 
     return (
         <>
-            <header className="site-header" data-header>
-                <a className="brand-mark" href="/" aria-label="Production Stojkovski home">
-                    <span className="brand-symbol">PS</span>
-                    <span>Produkcija Stojkovski</span>
-                </a>
 
-                <button className="nav-toggle" type="button" aria-label="Open navigation" aria-expanded="false" data-nav-toggle>
-                    <span></span>
-                    <span></span>
-                </button>
-                <nav className="site-nav" data-nav>
-                    <a href="/">Home</a>
-                    <a href="/portfolio">Portfolio</a>
-                    <a href="/services">Services</a>
-                    <a href="/about">About</a>
-                    <a href="/contact">Contact</a>
-                    <a className="nav-cta" href="/bookAProject">
-                        Book a Project
-                    </a>
-                </nav>
-            </header>
             <section className="portfolio section-shell" id="portfolio" aria-labelledby="portfolio-title">
                 <div className="section-kicker reveal">Selected Work</div>
                 <div className="section-heading reveal">
