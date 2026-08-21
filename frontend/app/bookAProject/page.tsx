@@ -24,9 +24,9 @@ export default function BookAProject() {
         };
 
         const serviceLabels: Record<ServiceType, string> = {
-            svadba: "Svadba",
-            rodjendan: "Rodjendan",
-            matura: "Matura",
+            svadba: "Свадба",
+            rodjendan: "Роденден",
+            matura: "Матура",
         };
 
         const addonPrices: Record<string, number> = {
@@ -71,7 +71,7 @@ export default function BookAProject() {
 
         let visibleDate = new Date(today.getFullYear(), today.getMonth(), 1);
         let selectedDate = "";
-        let serviceType: ServiceType = "svadba";
+        let serviceType: ServiceType = "Свадба";
         let bookings: Record<string, Booking> = {};
 
         const pad = (value: number) => String(value).padStart(2, "0");
@@ -302,7 +302,7 @@ export default function BookAProject() {
                     <p>Одберете што сакате да резервирате, па потоа изберете датум.</p>
 
                     <div className="modal-event-grid">
-                        <button className="tab is-active" type="button" data-service="svadba">
+                        <button className="tab is-active" type="button" data-service="Свадба">
                             Свадба
                         </button>
                         <button className="tab" type="button" data-service="rodjendan">
@@ -331,13 +331,13 @@ export default function BookAProject() {
                 <section className="section-shell" aria-label="Book a project">
                     <div className="service-tabs" role="tablist" aria-label="Service type">
                         <button className="tab is-active" type="button" data-service="svadba">
-                            Svadba
+                            Свадба
                         </button>
                         <button className="tab" type="button" data-service="rodjendan">
-                            Rodjendan
+                            Роденден
                         </button>
                         <button className="tab" type="button" data-service="matura">
-                            Matura
+                            Матура
                         </button>
                     </div>
 
@@ -376,10 +376,7 @@ export default function BookAProject() {
                             </div>
                             <div className="calendar-grid" data-calendar-grid></div>
 
-                            <div className="legend" aria-label="Calendar legend">
-                                <span className="available">Free</span>
-                                <span className="booked">Booked</span>
-                            </div>
+
                         </section>
 
                         <aside className="booking-panel" aria-label="Reservation details">
@@ -420,7 +417,7 @@ export default function BookAProject() {
 
                             <div className="price-box" aria-label="Package price">
                                 <div className="price-row">
-                                    <span data-base-label>Svadba</span>
+                                    <span data-base-label>Свадба</span>
                                     <strong data-base-price>500€</strong>
                                 </div>
                                 <div className="price-row">

@@ -166,18 +166,6 @@ export default function Home() {
           </section>
         </main>
 
-        <footer className="site-footer">
-          <a className="brand-mark" href="/public" aria-label="Production Stojkovski home">
-            <span className="brand-symbol">PS</span>
-            <span>Production Stojkovski</span>
-          </a>
-          <div className="footer-links" aria-label="Social media">
-            <a href="https://www.facebook.com/Foto.Belco.i.Dane">Facebook</a>
-            <a href="https://www.instagram.com/foto_belcoidane/">Instagram</a>
-            <a href="https://www.youtube.com/@fotobelcodane7352">YouTube</a>
-          </div>
-          <p>&copy; 2026 Production Stojkovski. All rights reserved.</p>
-        </footer>
       </>
   );
 }

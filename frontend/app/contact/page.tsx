@@ -25,7 +25,10 @@ export default function Contact() {
                             <div className="info-list">
                                 <div className="info-item">
                                     <span>Phone</span>
-                                    <a href="tel:+38970000000">+389 70 000 000</a>
+                                    <a href="tel:+38978286914">+389 78 286 914</a>
+                                </div>
+                                <div className="info-item">
+                                    <a href="tel:+38978296870">+389 78 296 870</a>
                                 </div>
 
                                 <div className="info-item">
@@ -37,7 +40,7 @@ export default function Contact() {
 
                                 <div className="info-item">
                                     <span>Location</span>
-                                    <p>YOUR_SHOP_ADDRESS</p>
+                                    <p>4PM8+RVH, Garnizon Kumanovo</p>
                                 </div>
                             </div>
                         </div>
