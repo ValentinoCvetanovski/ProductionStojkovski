@@ -425,7 +425,8 @@
     }
 
     .calendar-panel {
-        max-height: 340px;
+        min-height: 410px;
+        max-height: none;
     }
 
     .booking-panel {
@@ -483,4 +484,7 @@
     .modal-event-grid {
         grid-template-columns: 1fr;
     }
+}
+.is-hidden {
+    display: none !important;
 }

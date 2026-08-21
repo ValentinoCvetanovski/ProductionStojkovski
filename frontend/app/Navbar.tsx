@@ -1,8 +1,21 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+
+type Lang = "mk" | "en";
 
 export default function Navbar() {
+    const [lang, setLang] = useState<Lang>("mk");
+
+    useEffect(() => {
+        const savedLang = localStorage.getItem("siteLang") as Lang | null;
+
+        if (savedLang === "mk" || savedLang === "en") {
+            setLang(savedLang);
+            document.documentElement.lang = savedLang;
+        }
+    }, []);
+
     useEffect(() => {
         const header = document.querySelector<HTMLElement>("[data-header]");
         const nav = document.querySelector<HTMLElement>("[data-nav]");
@@ -45,12 +58,51 @@ export default function Navbar() {
         };
     }, []);
 
+    const changeLanguage = () => {
+        const nextLang: Lang = lang === "mk" ? "en" : "mk";
+
+        setLang(nextLang);
+        localStorage.setItem("siteLang", nextLang);
+        document.documentElement.lang = nextLang;
+        window.dispatchEvent(new CustomEvent("languagechange", { detail: nextLang }));
+    };
+
+    const text = {
+        mk: {
+            home: "Почетна",
+            portfolio: "Портфолио",
+            services: "Услуги",
+            about: "За нас",
+            contact: "Контакт",
+            book: "Резервирај",
+            langLabel: "Промени јазик",
+        },
+        en: {
+            home: "Home",
+            portfolio: "Portfolio",
+            services: "Services",
+            about: "About",
+            contact: "Contact",
+            book: "Book a Project",
+            langLabel: "Change language",
+        },
+    };
+
     return (
         <header className="site-header" data-header>
-            <a className="brand-mark" href="/" aria-label="Production Stojkovski home">
+            <a className="brand-mark" href="/" aria-label="Produkcija Stojkovski home">
                 <span className="brand-symbol">PS</span>
                 <span>Produkcija Stojkovski</span>
             </a>
+
+            <button
+                className="language-toggle"
+                type="button"
+                aria-label={text[lang].langLabel}
+                onClick={changeLanguage}
+            >
+                {lang === "mk" ? "EN" : "MK"}
+            </button>
 
             <button
                 className="nav-toggle"
@@ -64,13 +116,13 @@ export default function Navbar() {
             </button>
 
             <nav className="site-nav" data-nav>
-                <a href="/">Home</a>
-                <a href="/portfolio">Portfolio</a>
-                <a href="/services">Services</a>
-                <a href="/about">About</a>
-                <a href="/contact">Contact</a>
+                <a href="/">{text[lang].home}</a>
+                <a href="/portfolio">{text[lang].portfolio}</a>
+                <a href="/services">{text[lang].services}</a>
+                <a href="/about">{text[lang].about}</a>
+                <a href="/contact">{text[lang].contact}</a>
                 <a className="nav-cta" href="/bookAProject">
-                    Book a Project
+                    {text[lang].book}
                 </a>
             </nav>
         </header>

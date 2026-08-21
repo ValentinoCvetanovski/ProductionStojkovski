@@ -6,15 +6,15 @@ import Navbar from "./Navbar";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-    title: "Production Stojkovski | Cinematic Video Production",
+    title: "Produkcija Stojkovski | Видео продукција",
     description:
-        "Production Stojkovski is a premium video production and cinematic filmmaking brand crafting weddings, commercials, music videos, events, drone films, and timeless visual stories.",
+        "Produkcija Stojkovski е видео продукција за свадби, реклами, музички видеа, настани, drone снимки и cinematic visual stories.",
 };
 
 // @ts-ignore
 export default function RootLayout({ children }) {
     return (
-        <html lang="en">
+        <html lang="mk">
         <head>
             <link rel="preconnect" href="https://images.unsplash.com" />
             <link rel="preconnect" href="https://videos.pexels.com" />

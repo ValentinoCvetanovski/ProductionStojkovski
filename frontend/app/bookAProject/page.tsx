@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import "../css/bookAProject.css";
 
 interface Booking {
@@ -16,6 +16,72 @@ interface Booking {
 type ServiceType = "svadba" | "rodjendan" | "matura";
 
 export default function BookAProject() {
+    const [lang, setLang] = useState<"mk" | "en">("mk");
+    const [isReady, setIsReady] = useState(false);
+
+    const text = {
+        mk: {
+            noDate: "Нема избран датум",
+            svadba: "Свадба",
+            rodjendan: "Роденден",
+            matura: "Матура",
+            name: "Име",
+            clientName: "Име и презиме",
+            phone: "Телефон",
+            reserve: "Резервирај",
+            total: "Вкупно",
+            previousMonth: "Претходен месец",
+            nextMonth: "Следен месец",
+            calendar: "Календар за резервација",
+            details: "Детали за резервација",
+            packagePrice: "Цена на пакет",
+            ok: "Во ред",
+            loveStory: "Љубовна приказна",
+            crane: "Кран",
+            drone: "Дрон",
+        },
+        en: {
+            noDate: "No date selected",
+            svadba: "Wedding",
+            rodjendan: "Birthday",
+            matura: "Graduation",
+            name: "Name",
+            clientName: "Client name",
+            phone: "Phone",
+            reserve: "Reserve",
+            total: "Total",
+            previousMonth: "Previous month",
+            nextMonth: "Next month",
+            calendar: "Booking calendar",
+            details: "Reservation details",
+            packagePrice: "Package price",
+            ok: "OK",
+            loveStory: "Love Story",
+            crane: "Crane",
+            drone: "Drone",
+
+        },
+    };
+    useEffect(() => {
+        const savedLang = localStorage.getItem("siteLang") as "mk" | "en" | null;
+
+        if (savedLang === "mk" || savedLang === "en") {
+            setLang(savedLang);
+        }
+
+        setIsReady(true);
+
+        const handleLanguageChange = (event: Event) => {
+            const customEvent = event as CustomEvent<"mk" | "en">;
+            setLang(customEvent.detail);
+        };
+
+        window.addEventListener("languagechange", handleLanguageChange);
+
+        return () => {
+            window.removeEventListener("languagechange", handleLanguageChange);
+        };
+    }, []);
     useEffect(() => {
         const basePrices: Record<ServiceType, number> = {
             svadba: 500,
@@ -32,6 +98,7 @@ export default function BookAProject() {
         const addonPrices: Record<string, number> = {
             loveStory: 50,
             crane: 200,
+            drone: 150,
         };
 
         const monthNames = [
@@ -52,7 +119,7 @@ export default function BookAProject() {
         const prevMonthBtn = document.querySelector<HTMLButtonElement>("[data-prev-month]");
         const nextMonthBtn = document.querySelector<HTMLButtonElement>("[data-next-month]");
         const serviceTabs = document.querySelectorAll<HTMLButtonElement>("[data-service]");
-        const eventModal = document.querySelector<HTMLElement>("[data-event-modal]");
+
         const resultModal = document.querySelector<HTMLElement>("[data-result-modal]");
         const resultTitle = document.querySelector<HTMLElement>("[data-result-title]");
         const resultText = document.querySelector<HTMLElement>("[data-result-text]");
@@ -61,7 +128,7 @@ export default function BookAProject() {
         if (
             !calendarTitle || !calendarGrid || !selectedDateLabel || !totalPriceLabel || !baseLabel || !basePriceLabel ||
             !bookingForm || !bookButton || !statusMessage || !prevMonthBtn || !nextMonthBtn ||
-            !serviceTabs.length || !eventModal || !resultModal || !resultTitle || !resultText || !resultClose
+            !serviceTabs.length || !resultModal || !resultTitle || !resultText || !resultClose
         ) {
             return;
         }
@@ -71,7 +138,7 @@ export default function BookAProject() {
 
         let visibleDate = new Date(today.getFullYear(), today.getMonth(), 1);
         let selectedDate = "";
-        let serviceType: ServiceType = "Свадба";
+        let serviceType: ServiceType = "svadba";
         let bookings: Record<string, Booking> = {};
 
         const pad = (value: number) => String(value).padStart(2, "0");
@@ -88,16 +155,19 @@ export default function BookAProject() {
         };
 
         const getSelectedAddons = () => {
+            if (serviceType !== "svadba") {
+                return [];
+            }
+
             return Array.from(addonInputs)
                 .filter((input) => input.checked)
                 .map((input) => input.dataset.addon as string);
         };
 
         const calculateTotal = () => {
-            return getSelectedAddons().reduce(
-                (total, addon) => total + addonPrices[addon],
-                basePrices[serviceType]
-            );
+            return getSelectedAddons().reduce((total, addon) => {
+                return total + (addonPrices[addon] ?? 0);
+            }, basePrices[serviceType]);
         };
 
         const updateTotal = () => {
@@ -105,7 +175,21 @@ export default function BookAProject() {
             basePriceLabel.textContent = `${basePrices[serviceType]}€`;
             totalPriceLabel.textContent = `${calculateTotal()}€`;
         };
+        const addonGrid = document.querySelector<HTMLElement>("[data-addon-grid]");
+        const addonPriceRows = document.querySelectorAll<HTMLElement>("[data-addon-price-row]");
 
+        const updateAddonsVisibility = () => {
+            const showAddons = serviceType === "svadba";
+
+            addonGrid?.classList.toggle("is-hidden", !showAddons);
+            addonPriceRows.forEach((row) => row.classList.toggle("is-hidden", !showAddons));
+
+            if (!showAddons) {
+                addonInputs.forEach((input) => {
+                    input.checked = false;
+                });
+            }
+        };
         const setStatus = (message: string, type = "") => {
             statusMessage.textContent = message;
             statusMessage.className = `status-message${type ? ` is-${type}` : ""}`;
@@ -197,16 +281,12 @@ export default function BookAProject() {
             input.addEventListener("change", updateTotal);
         });
 
-        const closeEventModal = () => {
-            eventModal.classList.add("is-hidden");
-        };
-
         const handleServiceTabClick = (tab: HTMLButtonElement) => () => {
             serviceTabs.forEach((item) => item.classList.remove("is-active"));
             tab.classList.add("is-active");
             serviceType = tab.dataset.service as ServiceType;
+            updateAddonsVisibility();
             updateTotal();
-            closeEventModal();
         };
 
         serviceTabs.forEach((tab) => {
@@ -258,6 +338,7 @@ export default function BookAProject() {
                 selectedDate = "";
                 selectedDateLabel.textContent = formatDate(selectedDate);
                 bookButton.disabled = true;
+                updateAddonsVisibility();
                 updateTotal();
                 renderCalendar();
             } catch (error) {
@@ -273,7 +354,7 @@ export default function BookAProject() {
 
         // @ts-ignore
         bookingForm.addEventListener("submit", handleSubmit as EventListener);
-
+        updateAddonsVisibility();
         updateTotal();
         renderCalendar();
 
@@ -296,25 +377,6 @@ export default function BookAProject() {
 
     return (
         <>
-            <div className="booking-modal" data-event-modal>
-                <div className="booking-modal-box">
-                    <h2>Изберете тип на настан</h2>
-                    <p>Одберете што сакате да резервирате, па потоа изберете датум.</p>
-
-                    <div className="modal-event-grid">
-                        <button className="tab is-active" type="button" data-service="Свадба">
-                            Свадба
-                        </button>
-                        <button className="tab" type="button" data-service="rodjendan">
-                            Роденден
-                        </button>
-                        <button className="tab" type="button" data-service="matura">
-                            Матура
-                        </button>
-                    </div>
-                </div>
-            </div>
-
             <div className="booking-modal is-hidden" data-result-modal>
                 <div className="booking-modal-box">
                     <h2 data-result-title></h2>
@@ -331,23 +393,23 @@ export default function BookAProject() {
                 <section className="section-shell" aria-label="Book a project">
                     <div className="service-tabs" role="tablist" aria-label="Service type">
                         <button className="tab is-active" type="button" data-service="svadba">
-                            Свадба
+                            {text[lang].svadba}
                         </button>
                         <button className="tab" type="button" data-service="rodjendan">
-                            Роденден
+                            {text[lang].rodjendan}
                         </button>
                         <button className="tab" type="button" data-service="matura">
-                            Матура
+                            {text[lang].matura}
                         </button>
                     </div>
 
                     <div className="booking-layout">
-                        <section className="calendar-panel" aria-label="Booking calendar">
+                        <section className="calendar-panel" aria-label={text[lang].calendar}>
                             <div className="calendar-head">
                                 <button
                                     className="icon-button"
                                     type="button"
-                                    aria-label="Previous month"
+                                    aria-label={text[lang].previousMonth}
                                     data-prev-month
                                 >
                                     &larr;
@@ -358,7 +420,7 @@ export default function BookAProject() {
                                 <button
                                     className="icon-button"
                                     type="button"
-                                    aria-label="Next month"
+                                    aria-label={text[lang].nextMonth}
                                     data-next-month
                                 >
                                     &rarr;
@@ -379,57 +441,70 @@ export default function BookAProject() {
 
                         </section>
 
-                        <aside className="booking-panel" aria-label="Reservation details">
+                        <aside className="booking-panel" aria-label={text[lang].details}>
                             <div className="selected-date" data-selected-date>
-                                No date selected
+                                {text[lang].noDate}
                             </div>
 
                             <form data-booking-form>
                                 <div className="field-group">
                                     <div className="field">
-                                        <label htmlFor="client-name">Name</label>
-                                        <input id="client-name" name="clientName" type="text" placeholder="Client name" required />
+                                        <label htmlFor="client-name">{text[lang].name}</label>
+                                        <input id="client-name" name="clientName" type="text" placeholder={text[lang].clientName} required />
                                     </div>
                                     <div className="field">
-                                        <label htmlFor="client-phone">Phone</label>
+                                        <label htmlFor="client-phone">{text[lang].phone}</label>
                                         <input id="client-phone" name="clientPhone" type="tel" placeholder="+389..." required />
                                     </div>
                                 </div>
 
-                                <div className="option-grid">
+                                <div className="option-grid" data-addon-grid>
                                     <label className="option-card">
                                         <input type="checkbox" data-addon="loveStory" />
-                                        <strong>Love Story</strong>
+                                        <strong>{text[lang].loveStory}</strong>
                                         <span>+50€</span>
                                     </label>
                                     <label className="option-card">
                                         <input type="checkbox" data-addon="crane" />
-                                        <strong>Kran</strong>
+                                        <strong>{text[lang].crane}</strong>
                                         <span>+200€</span>
+                                    </label>
+                                    <label className="option-card">
+                                        <input type="checkbox" data-addon="drone" />
+                                        <strong>{text[lang].drone}</strong>
+                                        <span>+150€</span>
                                     </label>
                                 </div>
 
                                 <button className="button" type="submit" data-book-button disabled>
-                                    Reserve
+                                    {text[lang].reserve}
                                 </button>
                                 <div className="status-message" data-status-message></div>
                             </form>
 
-                            <div className="price-box" aria-label="Package price">
+                            <div className="price-box" aria-label={text[lang].packagePrice}>
                                 <div className="price-row">
-                                    <span data-base-label>Свадба</span>
+                                    <span data-base-label>{text[lang].svadba}</span>
                                     <strong data-base-price>500€</strong>
                                 </div>
-                                <div className="price-row">
-                                    <span>Love Story</span>
+
+                                <div className="price-row" data-addon-price-row>
+                                    <span>{text[lang].loveStory}</span>
                                     <strong>+50€</strong>
                                 </div>
-                                <div className="price-row">
-                                    <span>Kran</span>
+
+                                <div className="price-row" data-addon-price-row>
+                                    <span>{text[lang].crane}</span>
                                     <strong>+200€</strong>
                                 </div>
+
+                                <div className="price-row" data-addon-price-row>
+                                    <span>{text[lang].drone}</span>
+                                    <strong>+150€</strong>
+                                </div>
+
                                 <div className="price-total">
-                                    <span>Total</span>
+                                    <span>{text[lang].total}</span>
                                     <strong data-total-price>500€</strong>
                                 </div>
                             </div>

@@ -9,6 +9,7 @@
     justify-content: space-between;
     width: 100%;
     padding: 22px clamp(20px, 4vw, 56px);
+    color: var(--text);
     background: rgba(11, 11, 11, 0.78);
     border-bottom: 1px solid var(--line);
     backdrop-filter: blur(18px);
@@ -204,12 +205,7 @@ h2 {
 }
 
 @media (max-width: 640px) {
-    .site-header {
-        position: static;
-        align-items: flex-start;
-        flex-direction: column;
-        gap: 16px;
-    }
+
 
 
     .contact-hero {

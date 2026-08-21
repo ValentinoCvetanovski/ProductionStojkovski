@@ -1,9 +1,35 @@
 "use client";
+import { useEffect, useState } from "react";
 
-import { useEffect } from "react";
 
 export default function Home() {
+  const [lang, setLang] = useState<"mk" | "en">("mk");
+
+  const text = {
+    mk: {
+      eyebrow: "Видео продукција / Куманово / Секаде",
+      portfolio: "Види портфолио",
+      contact: "Контакт",
+    },
+    en: {
+      eyebrow: "Film Production / Kumanovo / Worldwide",
+      portfolio: "View Portfolio",
+      contact: "Get in Touch",
+    },
+  };
   useEffect(() => {
+    const savedLang = localStorage.getItem("siteLang") as "mk" | "en" | null;
+
+    if (savedLang === "mk" || savedLang === "en") {
+      setLang(savedLang);
+    }
+
+    const handleLanguageChange = (event: Event) => {
+      const customEvent = event as CustomEvent<"mk" | "en">;
+      setLang(customEvent.detail);
+    };
+
+    window.addEventListener("languagechange", handleLanguageChange);
     const parallaxVideo = document.querySelector<HTMLVideoElement>("[data-parallax-video]");
     const revealItems = document.querySelectorAll<HTMLElement>(".reveal");
     const filterButtons = document.querySelectorAll<HTMLButtonElement>("[data-filter]");
@@ -127,6 +153,9 @@ export default function Home() {
         applyProjectFilters();
       });
     }
+    return () => {
+      window.removeEventListener("languagechange", handleLanguageChange);
+    };
   }, []);
 
   return (
@@ -153,13 +182,13 @@ export default function Home() {
               <h1>Produkcija Stojkovski</h1>
               <br />
               <br />
-              <p className="eyebrow">Film Production / Skopje / Worldwide</p>
+              <p className="eyebrow">{text[lang].eyebrow}</p>
               <div className="hero-actions" aria-label="Primary actions">
                 <a className="button button-primary" href="/portfolio">
-                  View Portfolio
+                  {text[lang].portfolio}
                 </a>
                 <a className="button button-secondary" href="/contact">
-                  Get in Touch
+                  {text[lang].contact}
                 </a>
               </div>
             </div>
