@@ -36,7 +36,7 @@ export default function BookAProject() {
             details: "Детали за резервација",
             packagePrice: "Цена на пакет",
             ok: "Во ред",
-            loveStory: "Љубовна приказна",
+            loveStory: "Свадбен Трејлер",
             crane: "Кран",
             drone: "Дрон",
         },
@@ -84,7 +84,7 @@ export default function BookAProject() {
     }, []);
     useEffect(() => {
         const basePrices: Record<ServiceType, number> = {
-            svadba: 500,
+                svadba: 500,
             rodjendan: 200,
             matura: 250,
         };
@@ -96,7 +96,7 @@ export default function BookAProject() {
         };
 
         const addonPrices: Record<string, number> = {
-            loveStory: 50,
+            loveStory: 100,
             crane: 200,
             drone: 150,
         };
@@ -462,7 +462,7 @@ export default function BookAProject() {
                                     <label className="option-card">
                                         <input type="checkbox" data-addon="loveStory" />
                                         <strong>{text[lang].loveStory}</strong>
-                                        <span>+50€</span>
+                                        <span>+100€</span>
                                     </label>
                                     <label className="option-card">
                                         <input type="checkbox" data-addon="crane" />
@@ -490,7 +490,7 @@ export default function BookAProject() {
 
                                 <div className="price-row" data-addon-price-row>
                                     <span>{text[lang].loveStory}</span>
-                                    <strong>+50€</strong>
+                                    <strong>+100€</strong>
                                 </div>
 
                                 <div className="price-row" data-addon-price-row>

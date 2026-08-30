@@ -319,10 +319,7 @@ export default function Page() {
                             and cinematic editorials.
                         </p>
                     </div>
-                    <form className="search-panel" role="search" aria-label="Search projects">
-                        <label htmlFor="project-search">Search projects</label>
-                        <input id="project-search" type="search" placeholder="Search by title, style, or category" data-search />
-                    </form>
+
                 </div>
 
                 <div className="filter-row reveal" aria-label="Portfolio actions" data-admin-actions>
