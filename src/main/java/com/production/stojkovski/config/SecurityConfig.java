@@ -40,11 +40,20 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
                         .requestMatchers(HttpMethod.GET, "/api/auth/me").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/portfolio").permitAll()
+
+                        .requestMatchers(HttpMethod.GET, "/api/portfolio/folders").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/portfolio/folders/*/media").permitAll()
+
                         .requestMatchers("/uploads/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/portfolio/upload").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/portfolio/**").hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.POST, "/api/portfolio/folders").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/portfolio/folders/*/media").hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.DELETE, "/api/portfolio/folders/*").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/portfolio/media/*").hasRole("ADMIN")
+
                         .anyRequest().permitAll()
                 )
                 .httpBasic(Customizer.withDefaults());

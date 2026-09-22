@@ -6,6 +6,7 @@ type Lang = "mk" | "en";
 
 export default function Navbar() {
     const [lang, setLang] = useState<Lang>("mk");
+    const [isReady, setIsReady] = useState(false);
 
     useEffect(() => {
         const savedLang = localStorage.getItem("siteLang") as Lang | null;
@@ -13,7 +14,11 @@ export default function Navbar() {
         if (savedLang === "mk" || savedLang === "en") {
             setLang(savedLang);
             document.documentElement.lang = savedLang;
+        } else {
+            document.documentElement.lang = "mk";
         }
+
+        setIsReady(true);
     }, []);
 
     useEffect(() => {
@@ -87,9 +92,12 @@ export default function Navbar() {
             langLabel: "Change language",
         },
     };
-
+    if (!isReady) {
+        return null;
+    }
     return (
         <header className="site-header" data-header>
+            {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
             <a className="brand-mark" href="/" aria-label="Produkcija Stojkovski home">
                 <span className="brand-symbol">PS</span>
                 <span>Produkcija Stojkovski</span>
@@ -101,7 +109,9 @@ export default function Navbar() {
                 aria-label={text[lang].langLabel}
                 onClick={changeLanguage}
             >
-                {lang === "mk" ? "EN" : "MK"}
+                <span className={lang === "mk" ? "is-active" : ""}>MK</span>
+                <span aria-hidden="true"> | </span>
+                <span className={lang === "en" ? "is-active" : ""}>EN</span>
             </button>
 
             <button
@@ -116,6 +126,7 @@ export default function Navbar() {
             </button>
 
             <nav className="site-nav" data-nav>
+                {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
                 <a href="/">{text[lang].home}</a>
                 <a href="/portfolio">{text[lang].portfolio}</a>
                 <a href="/services">{text[lang].services}</a>

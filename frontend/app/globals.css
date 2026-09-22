@@ -1090,3 +1090,11 @@ h2 {
     font-size: 0.72rem;
   }
 }
+.language-toggle span {
+  opacity: 0.45;
+}
+
+.language-toggle span.is-active {
+  opacity: 1;
+  font-weight: 700;
+}

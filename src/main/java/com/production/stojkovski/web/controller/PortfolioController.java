@@ -1,6 +1,7 @@
 package com.production.stojkovski.web.controller;
 
-import com.production.stojkovski.model.PortfolioProject;
+import com.production.stojkovski.model.PortfolioFolder;
+import com.production.stojkovski.model.PortfolioMedia;
 import com.production.stojkovski.service.PortfolioService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,33 +19,54 @@ public class PortfolioController {
         this.portfolioService = portfolioService;
     }
 
-    @GetMapping
-    public List<PortfolioProject> getProjects() {
-        return portfolioService.getProjects();
+    @GetMapping("/folders")
+    public List<PortfolioFolder> getFolders() {
+        return portfolioService.getFolders();
     }
 
-    @PostMapping("/upload")
-    public ResponseEntity<PortfolioProject> uploadMedia(
-            @RequestParam("file") MultipartFile file,
+    @PostMapping("/folders")
+    public ResponseEntity<PortfolioFolder> createFolder(
+            @RequestParam("thumbnail") MultipartFile thumbnail,
             @RequestParam("title") String title,
             @RequestParam("category") String category,
             @RequestParam("duration") String duration,
             @RequestParam("description") String description
     ) {
-        PortfolioProject savedProject = portfolioService.uploadMedia(
-                file,
+        PortfolioFolder savedFolder = portfolioService.createFolder(
+                thumbnail,
                 title,
                 category,
                 duration,
                 description
         );
 
-        return ResponseEntity.ok(savedProject);
+        return ResponseEntity.ok(savedFolder);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProject(@PathVariable Long id) {
-        portfolioService.deleteProject(id);
+    @GetMapping("/folders/{folderId}/media")
+    public List<PortfolioMedia> getFolderMedia(@PathVariable Long folderId) {
+        return portfolioService.getFolderMedia(folderId);
+    }
+
+    @PostMapping("/folders/{folderId}/media")
+    public ResponseEntity<PortfolioMedia> addMediaToFolder(
+            @PathVariable Long folderId,
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("alt") String alt
+    ) {
+        PortfolioMedia savedMedia = portfolioService.addMediaToFolder(folderId, file, alt);
+        return ResponseEntity.ok(savedMedia);
+    }
+
+    @DeleteMapping("/folders/{folderId}")
+    public ResponseEntity<Void> deleteFolder(@PathVariable Long folderId) {
+        portfolioService.deleteFolder(folderId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/media/{mediaId}")
+    public ResponseEntity<Void> deleteMedia(@PathVariable Long mediaId) {
+        portfolioService.deleteMedia(mediaId);
         return ResponseEntity.noContent().build();
     }
 }

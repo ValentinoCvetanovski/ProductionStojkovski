@@ -5,36 +5,31 @@ import lombok.Getter;
 
 @Getter
 @Entity
-public class PortfolioProject {
+public class PortfolioFolder {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String type;
-    private String src;
-    private String category;
-    private String data;
     private String title;
+    private String category;
     private String duration;
 
     @Column(length = 2000)
     private String description;
 
+    private String thumbnailSrc;
     private String alt;
 
-    public PortfolioProject() {
+    public PortfolioFolder() {
     }
 
-    public PortfolioProject(String type, String src, String category, String data, String title, String duration, String description, String alt) {
-        this.type = type;
-        this.src = src;
-        this.category = category;
-        this.data = data;
+    public PortfolioFolder(String title, String category, String duration, String description, String thumbnailSrc, String alt) {
         this.title = title;
+        this.category = category;
         this.duration = duration;
         this.description = description;
+        this.thumbnailSrc = thumbnailSrc;
         this.alt = alt;
     }
-
 }

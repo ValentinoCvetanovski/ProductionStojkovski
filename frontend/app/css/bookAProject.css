@@ -488,3 +488,7 @@
 .is-hidden {
     display: none !important;
 }
+.field textarea {
+    width: 100%;
+    resize: vertical;
+}

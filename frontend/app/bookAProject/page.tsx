@@ -8,12 +8,12 @@ interface Booking {
     serviceType: string;
     clientName: FormDataEntryValue | null;
     clientPhone: FormDataEntryValue | null;
+    requestDescription: FormDataEntryValue | null;
     addons: string[];
     total: number;
     createdAt: string;
 }
-
-type ServiceType = "svadba" | "rodjendan" | "matura";
+type ServiceType = "svadba" | "drugo";
 
 export default function BookAProject() {
     const [lang, setLang] = useState<"mk" | "en">("mk");
@@ -23,8 +23,9 @@ export default function BookAProject() {
         mk: {
             noDate: "Нема избран датум",
             svadba: "Свадба",
-            rodjendan: "Роденден",
-            matura: "Матура",
+            drugo: "Друго",
+            requestDescription: "Опишете што ви треба",
+            requestDescriptionPlaceholder: "Напишете какво снимање, настан или проект сакате...",
             name: "Име",
             clientName: "Име и презиме",
             phone: "Телефон",
@@ -43,8 +44,9 @@ export default function BookAProject() {
         en: {
             noDate: "No date selected",
             svadba: "Wedding",
-            rodjendan: "Birthday",
-            matura: "Graduation",
+            drugo: "Other",
+            requestDescription: "Describe what you need",
+            requestDescriptionPlaceholder: "Write what kind of filming, event, or project you need...",
             name: "Name",
             clientName: "Client name",
             phone: "Phone",
@@ -66,6 +68,7 @@ export default function BookAProject() {
         const savedLang = localStorage.getItem("siteLang") as "mk" | "en" | null;
 
         if (savedLang === "mk" || savedLang === "en") {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setLang(savedLang);
         }
 
@@ -84,15 +87,13 @@ export default function BookAProject() {
     }, []);
     useEffect(() => {
         const basePrices: Record<ServiceType, number> = {
-                svadba: 500,
-            rodjendan: 200,
-            matura: 250,
+            svadba: 500,
+            drugo: 0,
         };
 
         const serviceLabels: Record<ServiceType, string> = {
             svadba: "Свадба",
-            rodjendan: "Роденден",
-            matura: "Матура",
+            drugo: "Друго",
         };
 
         const addonPrices: Record<string, number> = {
@@ -119,7 +120,7 @@ export default function BookAProject() {
         const prevMonthBtn = document.querySelector<HTMLButtonElement>("[data-prev-month]");
         const nextMonthBtn = document.querySelector<HTMLButtonElement>("[data-next-month]");
         const serviceTabs = document.querySelectorAll<HTMLButtonElement>("[data-service]");
-
+        const otherDescriptionField = document.querySelector<HTMLElement>("[data-other-description-field]");
         const resultModal = document.querySelector<HTMLElement>("[data-result-modal]");
         const resultTitle = document.querySelector<HTMLElement>("[data-result-title]");
         const resultText = document.querySelector<HTMLElement>("[data-result-text]");
@@ -139,7 +140,7 @@ export default function BookAProject() {
         let visibleDate = new Date(today.getFullYear(), today.getMonth(), 1);
         let selectedDate = "";
         let serviceType: ServiceType = "svadba";
-        let bookings: Record<string, Booking> = {};
+        const bookings: Record<string, Booking> = {};
 
         const pad = (value: number) => String(value).padStart(2, "0");
         const toDateKey = (date: Date) =>
@@ -189,6 +190,10 @@ export default function BookAProject() {
                     input.checked = false;
                 });
             }
+        };
+        const updateOtherDescriptionVisibility = () => {
+            const showDescription = serviceType === "drugo";
+            otherDescriptionField?.classList.toggle("is-hidden", !showDescription);
         };
         const setStatus = (message: string, type = "") => {
             statusMessage.textContent = message;
@@ -286,6 +291,7 @@ export default function BookAProject() {
             tab.classList.add("is-active");
             serviceType = tab.dataset.service as ServiceType;
             updateAddonsVisibility();
+            updateOtherDescriptionVisibility();
             updateTotal();
         };
 
@@ -318,6 +324,7 @@ export default function BookAProject() {
                         serviceType,
                         clientName: formData.get("clientName"),
                         clientPhone,
+                        requestDescription: formData.get("requestDescription"),
                         addons: getSelectedAddons(),
                         total: calculateTotal(),
                     }),
@@ -339,6 +346,7 @@ export default function BookAProject() {
                 selectedDateLabel.textContent = formatDate(selectedDate);
                 bookButton.disabled = true;
                 updateAddonsVisibility();
+                updateOtherDescriptionVisibility();
                 updateTotal();
                 renderCalendar();
             } catch (error) {
@@ -355,6 +363,7 @@ export default function BookAProject() {
         // @ts-ignore
         bookingForm.addEventListener("submit", handleSubmit as EventListener);
         updateAddonsVisibility();
+        updateOtherDescriptionVisibility();
         updateTotal();
         renderCalendar();
 
@@ -395,11 +404,8 @@ export default function BookAProject() {
                         <button className="tab is-active" type="button" data-service="svadba">
                             {text[lang].svadba}
                         </button>
-                        <button className="tab" type="button" data-service="rodjendan">
-                            {text[lang].rodjendan}
-                        </button>
-                        <button className="tab" type="button" data-service="matura">
-                            {text[lang].matura}
+                        <button className="tab" type="button" data-service="drugo">
+                            {text[lang].drugo}
                         </button>
                     </div>
 
@@ -457,7 +463,15 @@ export default function BookAProject() {
                                         <input id="client-phone" name="clientPhone" type="tel" placeholder="+389..." required />
                                     </div>
                                 </div>
-
+                                <div className="field is-hidden" data-other-description-field>
+                                    <label htmlFor="request-description">{text[lang].requestDescription}</label>
+                                    <textarea
+                                        id="request-description"
+                                        name="requestDescription"
+                                        placeholder={text[lang].requestDescriptionPlaceholder}
+                                        rows={5}
+                                    ></textarea>
+                                </div>
                                 <div className="option-grid" data-addon-grid>
                                     <label className="option-card">
                                         <input type="checkbox" data-addon="loveStory" />
